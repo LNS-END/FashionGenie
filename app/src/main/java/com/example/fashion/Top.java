@@ -1,20 +1,35 @@
-package com.example.fashion;
+package com.example.fashingenie;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.widget.ImageView;
+
+import com.google.gson.annotations.Expose;
+
+import java.io.File;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 @Entity
 
 public class Top {
+    @Expose
     @PrimaryKey(autoGenerate = true)
     private int ID =0;
+    @Expose
     private String Brand;
+    @Expose
     private String Category;
+    @Expose
     private String Color;
+    @Expose
     private String Season;
+    @Expose
     private String Textile;
-    private String Style;
-
+    @Expose
+    private String Cloth;
     private String ImagePath;
 
     public String getImagePath() {
@@ -73,13 +88,21 @@ public class Top {
         Textile = textile;
     }
 
-    public String getStyle() {
-        return Style;
+    public String getCloth() {
+        return Cloth;
     }
 
-    public void setStyle(String style) {
-        Style = style;
+    public void setCloth(String cloth) {
+        Cloth = cloth;
     }
 
-
+    public void loadImageIntoImageView(ImageView imageView) {
+        if (ImagePath != null) {
+            File imgFile = new File(ImagePath);
+            if (imgFile.exists()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                imageView.setImageBitmap(bitmap);
+            }
+        }
+    }
 }
