@@ -1,19 +1,38 @@
-package com.example.fashion;
+package com.example.fashingenie;
 
 import androidx.room.Database;
+import androidx.room.Insert;
 import androidx.room.RoomDatabase;
+import android.content.Context;
+import androidx.room.Room;
 
-@Database(entities = {com.example.fashion.HeadWear.class,Bag.class, com.example.fashion.Outer.class, Pants.class, com.example.fashion.Shoes.class, com.example.fashion.Top.class,Coordi.class, com.example.fashion.Weather.class , com.example.fashion.LikedCoordi.class},version = 7)
+@Database(entities = {HeadWear.class,Bag.class,Outer.class, Pants.class, Shoes.class,Top.class,Coordi.class,Weather.class ,LikedCoordi.class},version = 7)
 public abstract class DataBase extends RoomDatabase {
-    public abstract com.example.fashion.HeadWearDao headWearDao();
+
+    public abstract HeadWearDao headWearDao();
     public abstract BagDao bagDao();
-    public abstract com.example.fashion.OuterDao outerDao();
+    public abstract OuterDao outerDao();
     public abstract PantsDao pantsDao();
-    public abstract com.example.fashion.ShoesDao shoesDao();
-    public abstract com.example.fashion.TopDao topDao();
+    public abstract ShoesDao shoesDao();
+    public abstract TopDao topDao();
 
     public abstract  CoordiDao coordiDao();
 
-    public abstract com.example.fashion.LikedCoordiDao likedCoordiDao();
-    public abstract com.example.fashion.WeatherDao weatherDao();
+    public abstract  LikedCoordiDao likedCoordiDao();
+    public abstract WeatherDao weatherDao();
+
+   private static DataBase instance;
+
+    public static synchronized DataBase getInstance(Context context) {
+        if (instance == null) {
+            instance = Room.databaseBuilder(context.getApplicationContext(),
+                            DataBase.class, "database")
+                    .fallbackToDestructiveMigration()
+                    .build();
+        }
+        return instance;
+    }
+
+
+
 }
