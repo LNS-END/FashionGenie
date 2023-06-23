@@ -1,52 +1,102 @@
-package com.example.fashion;
+package com.example.fashingenie;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
+import java.io.File;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.content.Context;
 import org.json.JSONException;
 
-public class MainActivity extends AppCompatActivity implements com.example.fashion.DatabaseInitializationTask.DatabaseInitializationListener {
 
-    private com.example.fashion.HeadWearDao mHeadWearDao;
-    private com.example.fashion.BagDao mBagDao;
-    private com.example.fashion.OuterDao mOuterDao;
-    private com.example.fashion.PantsDao mPantsDao;
-    private com.example.fashion.ShoesDao mShoesDao;
-    private com.example.fashion.TopDao mTopDao;
-    private com.example.fashion.CoordiDao mcoordiDao;
-    private com.example.fashion.WeatherDao mWeatherDao;
-    private com.example.fashion.LikedCoordiDao mLikedCoordiDao;
-    private Button btn_Style;
+public class MainActivity extends AppCompatActivity implements DatabaseInitializationTask.DatabaseInitializationListener {
+    private HeadWearDao mHeadWearDao;
+    private BagDao mBagDao;
+    private OuterDao mOuterDao;
+    private PantsDao mPantsDao;
+    private ShoesDao mShoesDao;
+    private TopDao mTopDao;
+    private CoordiDao mcoordiDao;
+    private WeatherDao mWeatherDao;
+    private LikedCoordiDao mLikedCoordiDao;
+
+    private ImageView bagImageView;
+    private ImageView headwearImageView;
+    private ImageView outerImageView;
+    private ImageView pantsImageView;
+    private ImageView shoesImageView;
+    private ImageView topImageView;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        btn_Style = findViewById(R.id.todayOf_style);
-        btn_Style.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,style_of_today.class);
-                startActivity(intent); // 엑티비티 이동
-            }
-        });
-        com.example.fashion.DatabaseInitializationTask initializationTask = new com.example.fashion.DatabaseInitializationTask(this, this);
+        DatabaseInitializationTask initializationTask = new DatabaseInitializationTask(this, this);
         initializationTask.execute();
 
+        bagImageView = findViewById(R.id.bag_image_view);
+        headwearImageView = findViewById(R.id.headwear_image_view);
+        outerImageView = findViewById(R.id.outer_image_view);
+        pantsImageView = findViewById(R.id.pants_image_view);
+        shoesImageView = findViewById(R.id.shoes_image_view);
+        topImageView = findViewById(R.id.top_image_view);
 
+        String bagImagePath = getFilePathFromInternalStorage("bag_image.jpg");
+        if (bagImagePath != null) {
+            displayImage(bagImagePath, bagImageView);
+        }
+
+        String headwearImagePath = getFilePathFromInternalStorage("headwear_image.jpg");
+        if (headwearImagePath != null) {
+            displayImage(headwearImagePath, headwearImageView);
+        }
+
+        String outerImagePath = getFilePathFromInternalStorage("outer_image.jpg");
+        if (outerImagePath != null) {
+            displayImage(outerImagePath, outerImageView);
+        }
+
+        String pantsImagePath = getFilePathFromInternalStorage("pants_image.jpg");
+        if (pantsImagePath != null) {
+            displayImage(pantsImagePath, pantsImageView);
+        }
+
+        String shoesImagePath = getFilePathFromInternalStorage("shoes_image.jpg");
+        if (shoesImagePath != null) {
+            displayImage(shoesImagePath, shoesImageView);
+        }
+
+        String topImagePath = getFilePathFromInternalStorage("top_image.jpg");
+        if (topImagePath != null) {
+            displayImage(topImagePath, topImageView);
+        }
+    }
+
+    private String getFilePathFromInternalStorage(String fileName) {
+        File file = new File(getFilesDir(), fileName);
+        if (file.exists()) {
+            return file.getAbsolutePath();
+        }
+        return null;
+    }
+
+    private void displayImage(String imagePath, ImageView imageView) {
+        if (imagePath != null) {
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            imageView.setImageBitmap(bitmap);
+        }
     }
 
     @Override
-    public void onDatabaseInitialized(com.example.fashion.DataBase database) throws JSONException {
+    public void onDatabaseInitialized(DataBase database) throws JSONException {
         mHeadWearDao = database.headWearDao();
         mBagDao = database.bagDao();
         mPantsDao = database.pantsDao();
@@ -67,9 +117,15 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
 //        InsertPantsTask insertPantsTask = new InsertPantsTask(mPantsDao);
 //        insertPantsTask.execute();
 
+//        InsertShoesTask insertShoesTask = new InsertShoesTask(mShoesDao);
+//        insertShoesTask.execute();
 
 
-
+//        Bag bag = new Bag();
+//        bag.setImagePath("C:/Users/lmomj/Desktop/가방 이미지.png");
+//
+//        ImageView imageView = findViewById(R.id.my_image_view);
+//        bag.loadImageIntoImageView(imageView);
 
 //        InsertTopTask insertTopTask = new InsertTopTask(mTopDao);
 //        insertTopTask.execute();
@@ -98,6 +154,10 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         // UpdateTopTask updateTopTask = new UpdateTopTask(mTopDao, topToUpdate);
         // updateTopTask.execute();
 
+//        Bag bagToUpdate = new Bag();
+//        bagToUpdate.setID(1);
+//        bagToUpdate.setImagePath("C:/Users/lmomj/Desktop/가방 이미지.png");
+
         //insertHeadWearTask.execute();
 
 //        HeadWear headWearToUpdate = new HeadWear();
@@ -111,13 +171,13 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         //InsertTopTask insertTopTask = new InsertTopTask(mTopDao);
         //insertTopTask.execute();
 
-        // Top toptoDelete = new Top();
-        // toptoDelete.setID(1);
-        // DeleteTopTask deleteTopTask = new DeleteTopTask(mTopDao, toptoDelete);
-        // deleteTopTask.execute();
+       // Top toptoDelete = new Top();
+       // toptoDelete.setID(1);
+       // DeleteTopTask deleteTopTask = new DeleteTopTask(mTopDao, toptoDelete);
+       // deleteTopTask.execute();
 
         // 데이터 수정 작업을 백그라운드 스레드에서 실행
-        //  Top topToUpdate = new Top();
+      //  Top topToUpdate = new Top();
         // 데이터 삭제 작업을 백그라운드 스레드에서 실행
 //        Pants pantsToDelete = new Pants();// 삭제할 Pants 객체
 //        pantsToDelete.setID(3);
@@ -136,9 +196,9 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
 
 
         // topToUpdate.setID(1);
-        // topToUpdate.setColor("blue");// 수정할 Top 객체
-        // UpdateTopTask updateTopTask = new UpdateTopTask(mTopDao, topToUpdate);
-        // updateTopTask.execute();
+       // topToUpdate.setColor("blue");// 수정할 Top 객체
+       // UpdateTopTask updateTopTask = new UpdateTopTask(mTopDao, topToUpdate);
+       // updateTopTask.execute();
 //        InsertWeatherTask insertWeatherTask = new InsertWeatherTask(mWeatherDao);
 //        insertWeatherTask.execute();
 //        Pants pantsTODelete = new Pants();
@@ -150,23 +210,24 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
 
 
     }
+
     private static class InsertWeatherTask extends AsyncTask<Void,Void,Void>{
-        private com.example.fashion.WeatherDao mWeatherDao;
-        public InsertWeatherTask(com.example.fashion.WeatherDao weatherDao){
+        private WeatherDao mWeatherDao;
+        public InsertWeatherTask(WeatherDao weatherDao){
             mWeatherDao = weatherDao;
         }
         @Override
         protected  Void doInBackground(Void...voids){
-            com.example.fashion.Weather weather = new com.example.fashion.Weather();
+            Weather weather = new Weather();
             mWeatherDao.setInsertWeather(weather);
             return null;
         }
     }
     private static class DeleteWeatherTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.WeatherDao mWeatherDao;
-        private com.example.fashion.Weather mWeather;
+        private WeatherDao mWeatherDao;
+        private Weather mWeather;
 
-        public DeleteWeatherTask(com.example.fashion.WeatherDao weatherDao, com.example.fashion.Weather weather) {
+        public DeleteWeatherTask(WeatherDao weatherDao, Weather weather) {
             mWeatherDao =weatherDao;
             mWeather= weather;
         }
@@ -178,10 +239,10 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         }
     }
     private static class UpdateWeatherTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.WeatherDao mWeatherDao;
-        private com.example.fashion.Weather mWeather;
+        private WeatherDao mWeatherDao;
+        private Weather mWeather;
 
-        public UpdateWeatherTask(com.example.fashion.WeatherDao weatherDao, com.example.fashion.Weather weather) {
+        public UpdateWeatherTask(WeatherDao weatherDao,Weather weather) {
             mWeatherDao =weatherDao;
             mWeather =weather;
         }
@@ -191,20 +252,20 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
             return null;
         }
     }
-    private static class SelectWeatherTask extends AsyncTask<Integer, Void, com.example.fashion.Weather> {
-        private com.example.fashion.WeatherDao mWeatherDao;
+    private static class SelectWeatherTask extends AsyncTask<Integer, Void, Weather> {
+        private WeatherDao mWeatherDao;
 
-        public SelectWeatherTask(com.example.fashion.WeatherDao weatherDao) {
+        public SelectWeatherTask(WeatherDao weatherDao) {
             mWeatherDao = weatherDao;
         }
 
         @Override
-        protected com.example.fashion.Weather doInBackground(Integer... ids) {
+        protected Weather doInBackground(Integer... ids) {
             return mWeatherDao.getWeatherById(ids[0]);
         }
 
         @Override
-        protected void onPostExecute(com.example.fashion.Weather weather) {
+        protected void onPostExecute(Weather weather) {
             super.onPostExecute(weather);
             if (weather != null) {
                 Float weatherTemperature = weather.getTemperature();
@@ -223,19 +284,19 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         }
     }
     private static class InsertPantsTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.PantsDao mPantsDao;
-        public InsertPantsTask(com.example.fashion.PantsDao pantsDao) {
+        private PantsDao mPantsDao;
+        public InsertPantsTask(PantsDao pantsDao) {
             mPantsDao = pantsDao;
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            com.example.fashion.Pants pants = new com.example.fashion.Pants();
+            Pants pants = new Pants();
             pants.setSeason("Summer");
             pants.setBrand("Adidas");
             pants.setColor("Red");
             pants.setCategory("Gym");
             pants.setImagePath("");
-            pants.setStyle("casual");
+            pants.setCloth("casual");
             pants.setTextile("soft");
             pants.setImagePath("NULL");
             mPantsDao.setInsertPants(pants);
@@ -243,10 +304,10 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         }
     }
     private static class DeletePantsTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.PantsDao mPantsDao;
-        private com.example.fashion.Pants mPants;
+        private PantsDao mPantsDao;
+        private Pants mPants;
 
-        public DeletePantsTask(com.example.fashion.PantsDao pantsDao, com.example.fashion.Pants pants) {
+        public DeletePantsTask(PantsDao pantsDao, Pants pants) {
             mPantsDao = pantsDao;
             mPants = pants;
         }
@@ -258,10 +319,10 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         }
     }
     private static class UpdatePantsTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.PantsDao mPantsDao;
-        private com.example.fashion.Pants mPants;
+        private PantsDao mPantsDao;
+        private Pants mPants;
 
-        public UpdatePantsTask(com.example.fashion.PantsDao pantsDao, com.example.fashion.Pants pants) {
+        public UpdatePantsTask(PantsDao pantsDao,Pants pants) {
             mPantsDao = pantsDao;
             mPants = pants;
         }
@@ -271,25 +332,25 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
             return null;
         }
     }
-    private static class SelectPantsTask extends AsyncTask<Integer, Void, com.example.fashion.Pants> {
+    private static class SelectPantsTask extends AsyncTask<Integer, Void, Pants> {
         private ImageView mImageView;
         private Context mContext;
-        private com.example.fashion.PantsDao mPantsDao;
+        private PantsDao mPantsDao;
 
 
-        public SelectPantsTask(com.example.fashion.PantsDao pantsDao) {
+        public SelectPantsTask(PantsDao pantsDao) {
             mPantsDao = pantsDao;
 //            mContext = context;
 //            mImageView = imageView;
         }
 
         @Override
-        protected com.example.fashion.Pants doInBackground(Integer... ids) {
+        protected Pants doInBackground(Integer... ids) {
             return mPantsDao.getPantsById(ids[0]);
         }
 
         @Override
-        protected void onPostExecute(com.example.fashion.Pants pants) {
+        protected void onPostExecute(Pants pants) {
             super.onPostExecute(pants);
             if (pants != null) {
                 String pantsBrand = pants.getBrand();
@@ -297,11 +358,11 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
                 String pantsColor = pants.getColor();
                 String pantsTextile = pants.getTextile();
                 String pantsSeason = pants.getSeason();
-                String pantsStyle = pants.getStyle();
+                String pantsStyle = pants.getCloth();
                 String pantsImagePath = pants.getImagePath();
 
-                Log.d("SelectPantsTask", "Selected Pants Brand: " + pantsBrand);
                 Log.d("SelectPantsTask", "Selected Pants Category: " + pantsCategory);
+                Log.d("SelectPantsTask", "Selected Pants Brand: " + pantsBrand);
                 Log.d("SelectPantsTask", "Selected Pants Color: " + pantsColor);
                 Log.d("SelectPantsTask", "Selected Pants Textile: " + pantsTextile);
                 Log.d("SelectPantsTask", "Selected Pants Season: " + pantsSeason);
@@ -311,17 +372,17 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
 //                Glide.with(mContext)
 //                        .load(new File(pantsImagePath))
 //                        .into(mImageView);
-            }
+           }
             else {
                 Log.d("SelectPantsTask", "No pants found with given ID");
             }
         }
     }
     private static class DeleteTopTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.TopDao mTopDao;
-        private com.example.fashion.Top mTop;
+        private TopDao mTopDao;
+        private Top mTop;
 
-        public DeleteTopTask(com.example.fashion.TopDao topDao, com.example.fashion.Top top) {
+        public DeleteTopTask(TopDao topDao, Top top) {
             mTopDao = topDao;
             mTop = top;
         }
@@ -333,21 +394,21 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         }
     }
     private static class InsertTopTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.TopDao mTopDao;
+        private TopDao mTopDao;
 
-        public InsertTopTask(com.example.fashion.TopDao topDao) {
+        public InsertTopTask(TopDao topDao) {
             mTopDao = topDao;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            com.example.fashion.Top top = new com.example.fashion.Top();
+            Top top = new Top();
             top.setSeason("Summer");
             top.setBrand("Adidas");
             top.setColor("Red");
             top.setCategory("Gym");
             top.setImagePath("");
-            top.setStyle("casual");
+            top.setCloth("casual");
             top.setTextile("soft");
             top.setImagePath("NULL");
             mTopDao.setInsertTop(top);
@@ -355,10 +416,10 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         }
     }
     private static class UpdateTopTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.TopDao mTopDao;
-        private com.example.fashion.Top mTop;
+        private TopDao mTopDao;
+        private Top mTop;
 
-        public UpdateTopTask(com.example.fashion.TopDao topDao, com.example.fashion.Top top) {
+        public UpdateTopTask(TopDao topDao, Top top) {
             mTopDao = topDao;
             mTop = top;
         }
@@ -369,24 +430,24 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
             return null;
         }
     }
-    private static class SelectTopTask extends AsyncTask<Integer, Void, com.example.fashion.Top> {
-        private com.example.fashion.TopDao mTopDao;
+    private static class SelectTopTask extends AsyncTask<Integer, Void, Top> {
+        private TopDao mTopDao;
         private ImageView mImageView;
         private Context mContext;
 
-        public SelectTopTask(com.example.fashion.TopDao topDao) {
+        public SelectTopTask(TopDao topDao) {
             mTopDao = topDao;
 //            mImageView = imageView;
 //            mContext = context;
         }
 
         @Override
-        protected com.example.fashion.Top doInBackground(Integer... ids) {
+        protected Top doInBackground(Integer... ids) {
             return mTopDao.getTopById(ids[0]);
         }
 
         @Override
-        protected void onPostExecute(com.example.fashion.Top top) {
+        protected void onPostExecute(Top top) {
             super.onPostExecute(top);
             if (top != null) {
                 String topBrand = top.getBrand();
@@ -394,11 +455,11 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
                 String topColor = top.getColor();
                 String topTextile = top.getTextile();
                 String topSeason = top.getSeason();
-                String topStyle = top.getStyle();
+                String topStyle = top.getCloth();
                 String TopImagePath = top.getImagePath();
 
-                Log.d("SelectTopTask", "Selected Top Brand: " + topBrand);
                 Log.d("SelectTopTask", "Selected Top Category: " + topCategory);
+                Log.d("SelectTopTask", "Selected Top Brand: " + topBrand);
                 Log.d("SelectTopTask", "Selected Top Color: " + topColor);
                 Log.d("SelectTopTask", "Selected Top Textile: " + topTextile);
                 Log.d("SelectTopTask", "Selected Top Season: " + topSeason);
@@ -411,76 +472,76 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
             }
         }
     }
-    private static class InsertOuterTask extends AsyncTask<com.example.fashion.Outer, Void, Void> {
-        private com.example.fashion.OuterDao mOuterDao;
+    private static class InsertOuterTask extends AsyncTask<Outer, Void, Void> {
+        private OuterDao mOuterDao;
 
-        public InsertOuterTask(com.example.fashion.OuterDao outerDao) {
+        public InsertOuterTask(OuterDao outerDao) {
             mOuterDao = outerDao;
         }
 
         @Override
-        protected Void doInBackground(com.example.fashion.Outer... outers) {
-            com.example.fashion.Outer outer = new com.example.fashion.Outer();
+        protected Void doInBackground(Outer... outers) {
+            Outer outer = new Outer();
             outer.setSeason("Summer");
             outer.setBrand("Adidas");
             outer.setColor("Red");
             outer.setCategory("Gym");
             outer.setImagePath("");
-            outer.setStyle("casual");
+            outer.setCloth("casual");
             outer.setTextile("soft");
             outer.setImagePath("NULL");
             mOuterDao.setInsertOuter(outer);
             return null;
         }
     }
-    private static class DeleteOuterTask extends AsyncTask<com.example.fashion.Outer, Void, Void> {
-        private com.example.fashion.OuterDao mOuterDao;
-        private com.example.fashion.Outer mOuter;
+    private static class DeleteOuterTask extends AsyncTask<Outer, Void, Void> {
+        private OuterDao mOuterDao;
+        private Outer mOuter;
 
-        public DeleteOuterTask(com.example.fashion.OuterDao outerDao, com.example.fashion.Outer outer) {
+        public DeleteOuterTask(OuterDao outerDao, Outer outer) {
             mOuterDao = outerDao;
             mOuter = outer;
         }
 
         @Override
-        protected Void doInBackground(com.example.fashion.Outer... outers) {
+        protected Void doInBackground(Outer... outers) {
             mOuterDao.setDeleteOuter(mOuter);
             return null;
         }
     }
-    private static class UpdateOuterTask extends AsyncTask<com.example.fashion.Outer, Void, Void> {
-        private com.example.fashion.OuterDao mOuterDao;
-        private com.example.fashion.Outer mOuter;
+    private static class UpdateOuterTask extends AsyncTask<Outer, Void, Void> {
+        private OuterDao mOuterDao;
+        private Outer mOuter;
 
-        public UpdateOuterTask(com.example.fashion.OuterDao outerDao, com.example.fashion.Outer outer) {
+        public UpdateOuterTask(OuterDao outerDao, Outer outer) {
             mOuterDao = outerDao;
             mOuter = outer;
         }
 
         @Override
-        protected Void doInBackground(com.example.fashion.Outer... outer) {
+        protected Void doInBackground(Outer... outer) {
             mOuterDao.setUpdateOuter(mOuter);
             return null;
         }
     }
-    private static class SelectOuterTask extends AsyncTask<Integer, Void, com.example.fashion.Outer> {
-        private com.example.fashion.OuterDao mOuterDao;
+    private static class SelectOuterTask extends AsyncTask<Integer, Void, Outer> {
+        private OuterDao mOuterDao;
         private ImageView mImageView;
         private Context mContext;
 
-        public SelectOuterTask(com.example.fashion.OuterDao outerDao) {
+        public SelectOuterTask(OuterDao outerDao) {
             mOuterDao = outerDao;
 //            mContext = context;
 //            mImageView = imageView;
         }
 
         @Override
-        protected com.example.fashion.Outer doInBackground(Integer... ids) {
+        protected Outer doInBackground(Integer... ids) {
             return mOuterDao.getOuterById(ids[0]);
         }
 
         @Override
-        protected void onPostExecute(com.example.fashion.Outer outer) {
+        protected void onPostExecute(Outer outer) {
             super.onPostExecute(outer);
             if (outer != null) {
                 String outerBrand = outer.getBrand();
@@ -488,11 +549,11 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
                 String outerColor = outer.getColor();
                 String outerTextile = outer.getTextile();
                 String outerSeason = outer.getSeason();
-                String outerStyle = outer.getStyle();
+                String outerStyle = outer.getCloth();
                 String outerImagePath = outer.getImagePath();
 
-                Log.d("SelectOuterTask", "Selected Outer Brand: " + outerBrand);
                 Log.d("SelectOuterTask", "Selected Outer Category: " + outerCategory);
+                Log.d("SelectOuterTask", "Selected Outer Brand: " + outerBrand);
                 Log.d("SelectOuterTask", "Selected Outer Color: " + outerColor);
                 Log.d("SelectOuterTask", "Selected Outer Textile: " + outerTextile);
                 Log.d("SelectOuterTask", "Selected Outer Season: " + outerSeason);
@@ -505,76 +566,76 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
             }
         }
     }
-    private static class InsertShoesTask extends AsyncTask<com.example.fashion.Shoes, Void, Void> {
-        private com.example.fashion.ShoesDao mShoesDao;
+    private static class InsertShoesTask extends AsyncTask<Shoes, Void, Void> {
+        private ShoesDao mShoesDao;
 
-        public InsertShoesTask(com.example.fashion.ShoesDao shoesDao) {
+        public InsertShoesTask(ShoesDao shoesDao) {
             mShoesDao = shoesDao;
         }
 
         @Override
-        protected Void doInBackground(com.example.fashion.Shoes... shoeses) {
-            com.example.fashion.Shoes shoes = new com.example.fashion.Shoes();
-            shoes.setSeason("Summer");
-            shoes.setBrand("Adidas");
-            shoes.setColor("Red");
+        protected Void doInBackground(Shoes... shoeses) {
+            Shoes shoes = new Shoes();
+            shoes.setSeason("fuck");
+            shoes.setBrand("SSibal");
+            shoes.setColor("asshole");
             shoes.setCategory("Gym");
             shoes.setImagePath("");
-            shoes.setStyle("casual");
+            shoes.setCloth("casual");
             shoes.setTextile("soft");
             shoes.setImagePath("NULL");
             mShoesDao.setInsertShoes(shoes);
             return null;
         }
     }
-    private static class DeleteShoesTask extends AsyncTask<com.example.fashion.Shoes, Void, Void> {
-        private com.example.fashion.ShoesDao mShoesDao;
-        private com.example.fashion.Shoes mShoes;
+    private static class DeleteShoesTask extends AsyncTask<Shoes, Void, Void> {
+        private ShoesDao mShoesDao;
+        private Shoes mShoes;
 
-        public DeleteShoesTask(com.example.fashion.ShoesDao shoesDao, com.example.fashion.Shoes shoes) {
+        public DeleteShoesTask(ShoesDao shoesDao, Shoes shoes) {
             mShoesDao =shoesDao;
             mShoes = shoes;
         }
 
         @Override
-        protected Void doInBackground(com.example.fashion.Shoes... shoes) {
+        protected Void doInBackground(Shoes... shoes) {
             mShoesDao.setDeleteShoes(mShoes);
             return null;
         }
     }
-    private static class UpdateShoesTask extends AsyncTask<com.example.fashion.Shoes, Void, Void> {
-        private com.example.fashion.ShoesDao mShoesDao;
-        private com.example.fashion.Shoes mShoes;
+    private static class UpdateShoesTask extends AsyncTask<Shoes, Void, Void> {
+        private ShoesDao mShoesDao;
+        private Shoes mShoes;
 
-        public UpdateShoesTask(com.example.fashion.ShoesDao shoesDao, com.example.fashion.Shoes shoes) {
+        public UpdateShoesTask(ShoesDao shoesDao, Shoes shoes) {
             mShoesDao =shoesDao;
             mShoes = shoes;
         }
 
         @Override
-        protected Void doInBackground(com.example.fashion.Shoes... shoes) {
+        protected Void doInBackground(Shoes... shoes) {
             mShoesDao.setUpdateShoes(mShoes);
             return null;
         }
     }
-    private static class SelectShoesTask extends AsyncTask<Integer, Void, com.example.fashion.Shoes> {
-        private com.example.fashion.ShoesDao mShoesDao;
+    private static class SelectShoesTask extends AsyncTask<Integer, Void, Shoes> {
+        private ShoesDao mShoesDao;
         private ImageView mImageView;
         private Context mContext;
 
-        public SelectShoesTask(com.example.fashion.ShoesDao shoesDao) {
+        public SelectShoesTask(ShoesDao shoesDao) {
             mShoesDao = shoesDao;
 //            mContext = context;
 //            mImageView = imageView;
         }
 
         @Override
-        protected com.example.fashion.Shoes doInBackground(Integer... ids) {
+        protected Shoes doInBackground(Integer... ids) {
             return mShoesDao.getShoesById(ids[0]);
         }
 
         @Override
-        protected void onPostExecute(com.example.fashion.Shoes shoes) {
+        protected void onPostExecute(Shoes shoes) {
             super.onPostExecute(shoes);
             if (shoes != null) {
                 String shoesBrand = shoes.getBrand();
@@ -582,11 +643,11 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
                 String shoesColor = shoes.getColor();
                 String shoesTextile = shoes.getTextile();
                 String shoesSeason = shoes.getSeason();
-                String shoesStyle = shoes.getStyle();
+                String shoesStyle = shoes.getCloth();
                 String shoesImagePath = shoes.getImagePath();
 
-                Log.d("SelectShoesTask", "Selected Shoes Brand: " + shoesBrand);
                 Log.d("SelectShoesTask", "Selected Shoes Category: " + shoesCategory);
+                Log.d("SelectShoesTask", "Selected Shoes Brand: " + shoesBrand);
                 Log.d("SelectShoesTask", "Selected Shoes Color: " + shoesColor);
                 Log.d("SelectShoesTask", "Selected Shoes Textile: " + shoesTextile);
                 Log.d("SelectShoesTask", "Selected Shoes Season: " + shoesSeason);
@@ -599,49 +660,49 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
             }
         }
     }
-    private static class InsertBagTask extends AsyncTask<com.example.fashion.Bag, Void, Void> {
-        private com.example.fashion.BagDao mBagDao;
+    private static class InsertBagTask extends AsyncTask<Bag, Void, Void> {
+        private BagDao mBagDao;
 
-        public InsertBagTask(com.example.fashion.BagDao bagDao) {
+        public InsertBagTask(BagDao bagDao) {
             mBagDao = bagDao;
         }
 
         @Override
-        protected Void doInBackground(com.example.fashion.Bag... bags) {
-            com.example.fashion.Bag bag = new com.example.fashion.Bag();
+        protected Void doInBackground(Bag... bags) {
+            Bag bag = new Bag();
             bag.setSeason("Summer");
             bag.setBrand("Adidas");
             bag.setColor("Red");
             bag.setCategory("Gym");
             bag.setImagePath("");
-            bag.setStyle("casual");
+            bag.setCloth("casual");
             bag.setTextile("soft");
             bag.setImagePath("NULL");
             mBagDao.setInsertBag(bag);
             return null;
         }
     }
-    private static class DeleteBagTask extends AsyncTask<com.example.fashion.Bag, Void, Void> {
-        private com.example.fashion.BagDao mBagDao;
-        private com.example.fashion.Bag mBag;
+    private static class DeleteBagTask extends AsyncTask<Bag, Void, Void> {
+        private BagDao mBagDao;
+        private Bag mBag;
 
-        public DeleteBagTask(com.example.fashion.BagDao bagDao, com.example.fashion.Bag bag) {
+        public DeleteBagTask(BagDao bagDao, Bag bag) {
             mBagDao = bagDao;
             mBag = bag;
         }
 
         @Override
-        protected Void doInBackground(com.example.fashion.Bag... bags) {
+        protected Void doInBackground(Bag... bags) {
             mBagDao.setDeleteBag(mBag);
             return null;
         }
     }
-    private static class SelectBagTask extends AsyncTask<Integer, Void, com.example.fashion.Bag> {
-        private com.example.fashion.BagDao mBagDao;
+    private static class SelectBagTask extends AsyncTask<Integer, Void, Bag> {
+        private BagDao mBagDao;
         private ImageView mImageView;
         private Context mContext;
 
-        public SelectBagTask(com.example.fashion.BagDao bagDao) {
+        public SelectBagTask(BagDao bagDao) {
             mBagDao = bagDao;
 //            mContext = context;
 //            mImageView = imageView;
@@ -649,12 +710,13 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         }
 
         @Override
-        protected com.example.fashion.Bag doInBackground(Integer... ids) {
+        protected Bag doInBackground(Integer... ids) {
+
             return mBagDao.getBagById(ids[0]);
         }
 
         @Override
-        protected void onPostExecute(com.example.fashion.Bag bag) {
+        protected void onPostExecute(Bag bag) {
             super.onPostExecute(bag);
             if (bag != null) {
                 String bagBrand = bag.getBrand();
@@ -662,11 +724,11 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
                 String bagColor = bag.getColor();
                 String bagTextile = bag.getTextile();
                 String bagSeason = bag.getSeason();
-                String bagStyle = bag.getStyle();
+                String bagStyle = bag.getCloth();
                 String bagImagePath = bag.getImagePath();
 
-                Log.d("SelectBagTask", "Selected Bag Brand: " + bagBrand);
                 Log.d("SelectBagTask", "Selected Bag Category: " + bagCategory);
+                Log.d("SelectBagTask", "Selected Bag Brand: " + bagBrand);
                 Log.d("SelectBagTask", "Selected Bag Color: " + bagColor);
                 Log.d("SelectBagTask", "Selected Bag Textile: " + bagTextile);
                 Log.d("SelectBagTask", "Selected Bag Season: " + bagSeason);
@@ -679,17 +741,17 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
             }
         }
     }
-    private static class UpdateBagTask extends AsyncTask<com.example.fashion.Bag, Void, Void> {
-        private com.example.fashion.BagDao mBagDao;
-        private com.example.fashion.Bag mBag;
+    private static class UpdateBagTask extends AsyncTask<Bag, Void, Void> {
+        private BagDao mBagDao;
+        private Bag mBag;
 
-        public UpdateBagTask(com.example.fashion.BagDao bagDao, com.example.fashion.Bag bag) {
+        public UpdateBagTask(BagDao bagDao, Bag bag) {
             mBagDao = bagDao;
             mBag = bag;
         }
 
         @Override
-        protected Void doInBackground(com.example.fashion.Bag... bags) {
+        protected Void doInBackground(Bag... bags) {
             mBagDao.setUpdateBag(mBag);
             return null;
         }
@@ -697,21 +759,21 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
 
 
     private static class InsertHeadWearTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.HeadWearDao mHeadWearDao;
+        private HeadWearDao mHeadWearDao;
 
-        public InsertHeadWearTask(com.example.fashion.HeadWearDao headWearDao) {
+        public InsertHeadWearTask(HeadWearDao headWearDao) {
             mHeadWearDao = headWearDao;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            com.example.fashion.HeadWear headWear = new com.example.fashion.HeadWear();
+            HeadWear headWear = new HeadWear();
             headWear.setSeason("Summer");
             headWear.setBrand("Adidas");
             headWear.setColor("Red");
             headWear.setCategory("Gym");
             headWear.setImagePath("");
-            headWear.setStyle("casual");
+            headWear.setCloth("casual");
             headWear.setTextile("soft");
             headWear.setImagePath("NULL");
             mHeadWearDao.setInsertHeadWear(headWear);
@@ -719,10 +781,10 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         }
     }
     private static class DeleteHeadWearTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.HeadWearDao mHeadWearDao;
-        private com.example.fashion.HeadWear mHeadWear;
+        private HeadWearDao mHeadWearDao;
+        private HeadWear mHeadWear;
 
-        public DeleteHeadWearTask(com.example.fashion.HeadWearDao headWearDao, com.example.fashion.HeadWear headWear) {
+        public DeleteHeadWearTask(HeadWearDao headWearDao, HeadWear headWear) {
             mHeadWearDao = headWearDao;
             mHeadWear = headWear;
         }
@@ -734,10 +796,10 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         }
     }
     private static class UpdateHeadWearTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.HeadWearDao mHeadWearDao;
-        private com.example.fashion.HeadWear mHeadWear;
+        private HeadWearDao mHeadWearDao;
+        private HeadWear mHeadWear;
 
-        public UpdateHeadWearTask(com.example.fashion.HeadWearDao headWearDao, com.example.fashion.HeadWear headWear) {
+        public UpdateHeadWearTask(HeadWearDao headWearDao, HeadWear headWear) {
             mHeadWearDao = headWearDao;
             mHeadWear = headWear;
         }
@@ -748,22 +810,22 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
             return null;
         }
     }
-    private static class SelectHeadWearTask extends AsyncTask<Integer, Void, com.example.fashion.HeadWear> {
-        private com.example.fashion.HeadWearDao mHeadWearDao;
+    private static class SelectHeadWearTask extends AsyncTask<Integer, Void, HeadWear> {
+        private HeadWearDao mHeadWearDao;
         private ImageView mImageView;
         private Context mContext;
 
-        public SelectHeadWearTask(com.example.fashion.HeadWearDao headWearDao) {
+        public SelectHeadWearTask(HeadWearDao headWearDao) {
             mHeadWearDao = headWearDao;
         }
 
         @Override
-        protected com.example.fashion.HeadWear doInBackground(Integer... ids) {
+        protected HeadWear doInBackground(Integer... ids) {
             return mHeadWearDao.getHeadWearById(ids[0]);
         }
 
         @Override
-        protected void onPostExecute(com.example.fashion.HeadWear headWear) {
+        protected void onPostExecute(HeadWear headWear) {
             super.onPostExecute(headWear);
             if (headWear != null) {
                 String headWearBrand = headWear.getBrand();
@@ -771,11 +833,11 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
                 String headWearColor = headWear.getColor();
                 String headWearTextile = headWear.getTextile();
                 String headWearSeason = headWear.getSeason();
-                String headWearStyle = headWear.getStyle();
+                String headWearStyle = headWear.getCloth();
                 String headWearImagePath = headWear.getImagePath();
 
-                Log.d("SelectHeadWearTask", "Selected HeadWear Brand: " + headWearBrand);
                 Log.d("SelectHeadWearTask", "Selected HeadWear Category: " + headWearCategory);
+                Log.d("SelectHeadWearTask", "Selected HeadWear Brand: " + headWearBrand);
                 Log.d("SelectHeadWearTask", "Selected HeadWear Color: " + headWearColor);
                 Log.d("SelectHeadWearTask", "Selected HeadWear Textile: " + headWearTextile);
                 Log.d("SelectHeadWearTask", "Selected HeadWear Season: " + headWearSeason);
@@ -787,24 +849,24 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         }
     }
     private static class InsertCoordiTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.CoordiDao mCoordiDao;
+        private CoordiDao mCoordiDao;
 
-        public InsertCoordiTask(com.example.fashion.CoordiDao coordiDao) {
+        public InsertCoordiTask(CoordiDao coordiDao) {
             mCoordiDao = coordiDao;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            com.example.fashion.Coordi coordi = new com.example.fashion.Coordi();
+            Coordi coordi = new Coordi();
             mCoordiDao.setInsertCoordi(coordi);
             return null;
         }
     }
     private static class DeleteCoordiTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.CoordiDao mCoordiDao;
-        private com.example.fashion.Coordi mCoordi;
+        private CoordiDao mCoordiDao;
+        private Coordi mCoordi;
 
-        public DeleteCoordiTask(com.example.fashion.CoordiDao coordiDao, com.example.fashion.Coordi coordi) {
+        public DeleteCoordiTask(CoordiDao coordiDao, Coordi coordi) {
             mCoordiDao = coordiDao;
             mCoordi = coordi;
         }
@@ -816,10 +878,10 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         }
     }
     private static class UpdateCoordiTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.CoordiDao mCoordiDao;
-        private com.example.fashion.Coordi mCoordi;
+        private CoordiDao mCoordiDao;
+        private Coordi mCoordi;
 
-        public UpdateCoordiTask(com.example.fashion.CoordiDao coordiDao, com.example.fashion.Coordi coordi) {
+        public UpdateCoordiTask(CoordiDao coordiDao, Coordi coordi) {
             mCoordiDao = coordiDao;
             mCoordi = coordi;
         }
@@ -832,25 +894,25 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
     }
 
     private static class InsertLikedCoordiTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.LikedCoordiDao mLikedCoordiDao;
+        private LikedCoordiDao mLikedCoordiDao;
 
-        public InsertLikedCoordiTask(com.example.fashion.LikedCoordiDao likedCoordiDao) {
+        public InsertLikedCoordiTask(LikedCoordiDao likedCoordiDao) {
             mLikedCoordiDao = likedCoordiDao;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            com.example.fashion.LikedCoordi likedCoordi = new com.example.fashion.LikedCoordi();
+            LikedCoordi likedCoordi = new LikedCoordi();
             mLikedCoordiDao.setInsertLikedCoordi(likedCoordi);
             return null;
         }
     }
 
     private static class DeleteLikedCoordiTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.LikedCoordiDao mLikedCoordiDao;
-        private com.example.fashion.LikedCoordi mLikedCoordi;
+        private LikedCoordiDao mLikedCoordiDao;
+        private LikedCoordi mLikedCoordi;
 
-        public DeleteLikedCoordiTask(com.example.fashion.LikedCoordiDao likedCoordiDao, com.example.fashion.LikedCoordi likedCoordi) {
+        public DeleteLikedCoordiTask(LikedCoordiDao likedCoordiDao, LikedCoordi likedCoordi) {
             mLikedCoordiDao = likedCoordiDao;
             mLikedCoordi = likedCoordi;
         }
@@ -862,10 +924,10 @@ public class MainActivity extends AppCompatActivity implements com.example.fashi
         }
     }
     private static class UpdateLikedCoordiTask extends AsyncTask<Void, Void, Void> {
-        private com.example.fashion.LikedCoordiDao mLikedCoordiDao;
-        private com.example.fashion.LikedCoordi mLikedCoordi;
+        private LikedCoordiDao mLikedCoordiDao;
+        private LikedCoordi mLikedCoordi;
 
-        public UpdateLikedCoordiTask(com.example.fashion.LikedCoordiDao likedCoordiDao, com.example.fashion.LikedCoordi likedCoordi) {
+        public UpdateLikedCoordiTask(LikedCoordiDao likedCoordiDao, LikedCoordi likedCoordi) {
             mLikedCoordiDao = likedCoordiDao;
             mLikedCoordi = likedCoordi;
         }
