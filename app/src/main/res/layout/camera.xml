@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#ECE6CC"
+    tools:context=".CameraActivity">
+
+    <!-- 카테고리 선택 라디오 버튼 그룹 -->
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio_top"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:textSize="50sp"
+            android:text="Top" />
+
+        <RadioButton
+            android:id="@+id/radio_pants"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:textSize="50sp"
+            android:text="Pants" />
+
+        <RadioButton
+            android:id="@+id/radio_outer"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:textSize="50sp"
+            android:text="Outer" />
+
+        <RadioButton
+            android:id="@+id/radio_shoes"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:textSize="50sp"
+            android:text="Shoes" />
+
+        <RadioButton
+            android:id="@+id/radio_headwear"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:textSize="50sp"
+            android:text="Headwear" />
+
+        <RadioButton
+            android:id="@+id/radio_bag"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:textSize="50sp"
+            android:text="Bag" />
+
+    </RadioGroup>
+
+    <!-- 촬영 버튼 -->
+    <Button
+        android:id="@+id/btn_take_photo"
+        android:layout_width="400dp"
+        android:layout_height="100dp"
+        android:textSize="50sp"
+        android:text="사진 촬영" />
+
+    <!-- 이미지 미리보기 뷰 -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/preview_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

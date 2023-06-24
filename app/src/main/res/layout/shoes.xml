@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#ECE6CC"
+    android:padding="16dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_outer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SHOES"
+            android:textSize="70sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/delete_btn"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_alignParentEnd="true"
+            android:background="@android:drawable/ic_menu_delete"
+            android:contentDescription="삭제"/>
+
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:numColumns="3"
+        android:verticalSpacing="8dp"
+        android:horizontalSpacing="8dp" />
+
+    <Button
+        android:id="@+id/plus"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_gravity="end"
+        android:background="@drawable/border_button"
+        android:textColor="@color/black"
+        android:textSize="70dp"
+        android:text="+" />
+
+</LinearLayout>
