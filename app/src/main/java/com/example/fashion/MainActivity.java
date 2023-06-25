@@ -67,7 +67,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
     private Button btn_Style_ton;
     private Button btn_Style_closet;
 
-    private Button btn_Style_we;
+    private Button btn_Style_web;
+
+
 
     private static final String API_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst";
     private static final String SERVICE_KEY = "%2BS0YUmIviJtQT3mn%2F7AIROkt4IqYMhL7cLGNtL3ukN4XtBgUJRn4XLF27Vq315kgew358sxOzJBcUTKL3qAKFg%3D%3D";
@@ -109,8 +111,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
                 startActivity(intent); // 엑티비티 이동
             }
         });
-        btn_Style_ton = findViewById(R.id.Calendar);
-        btn_Style_ton.setOnClickListener(new View.OnClickListener() {
+
+        btn_Style_web = findViewById(R.id.Calendar);
+        btn_Style_web.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,chatdirect.class);

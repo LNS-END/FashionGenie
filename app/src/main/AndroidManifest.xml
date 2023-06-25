@@ -68,6 +68,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.example.fashion.chatdirect"
+            android:label="ChatDirectActivity">
+        </activity>
     </application>
 
 </manifest>

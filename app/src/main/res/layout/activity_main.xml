@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:text="일정 및 날씨"
             android:textSize="70dp"
-            android:id="@+id/Weather_test"/>
+            android:id="@+id/Calendar"/>
 
     </LinearLayout>
 
