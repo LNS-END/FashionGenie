@@ -9,12 +9,14 @@ import androidx.room.Room;
 import org.json.JSONException;
 
 
-public class DatabaseInitializationTask extends AsyncTask<Void, Void, DataBase> {
+public class DatabaseInitializationTask extends AsyncTask<Void, Void, com.example.fashion.DataBase> {
     private final Context mContext;
     private final DatabaseInitializationListener mListener;
 
     public interface DatabaseInitializationListener {
-        void onDatabaseInitialized(DataBase database) throws JSONException;
+        void onDatabaseInitialized(com.example.fashion.DataBase database) throws JSONException;
+
+
     }
 
     public DatabaseInitializationTask(Context context, DatabaseInitializationListener listener) {
@@ -23,14 +25,14 @@ public class DatabaseInitializationTask extends AsyncTask<Void, Void, DataBase> 
     }
 
     @Override
-    protected DataBase doInBackground(Void... voids) {
-        return Room.databaseBuilder(mContext,DataBase.class,"Fashion Genie_db")
+    protected com.example.fashion.DataBase doInBackground(Void... voids) {
+        return Room.databaseBuilder(mContext, com.example.fashion.DataBase.class,"Fashion Genie_db")
                 .fallbackToDestructiveMigration()
                 .build();
     }
 
     @Override
-    protected void onPostExecute(DataBase database) {
+    protected void onPostExecute(com.example.fashion.DataBase database) {
         if (mListener != null) {
             try{
                 mListener.onDatabaseInitialized(database);

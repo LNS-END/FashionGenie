@@ -11,17 +11,18 @@ import java.util.List;
 @Dao
 public interface OuterDao {
     @Insert
-    void setInsertOuter(com.example.fashion.Outer outer );
+    void setInsertOuter(com.example.fashion.Outer outer);
 
     @Update
-    void setUpdateOuter(com.example.fashion.Outer outer );
+    void setUpdateOuter(com.example.fashion.Outer mOuter);
 
     @Delete
-    void setDeleteOuter(com.example.fashion.Outer outer );
+    void setDeleteOuter(com.example.fashion.Outer mOuter);
 
     @Query("Select * from `Outer`")
     List<com.example.fashion.Outer> getOuterAll();
 
     @Query("SELECT * FROM `Outer` WHERE ID = :id")
     com.example.fashion.Outer getOuterById(int id);
+
 }

@@ -1,16 +1,18 @@
-package com.example.fashingenie;
+package com.example.fashion;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
 
 import java.io.File;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.content.Context;
+
+import com.example.fashion.Outer;
+
 import org.json.JSONException;
 
 
@@ -42,12 +44,12 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         DatabaseInitializationTask initializationTask = new DatabaseInitializationTask(this, this);
         initializationTask.execute();
 
-        bagImageView = findViewById(R.id.bag_image_view);
-        headwearImageView = findViewById(R.id.headwear_image_view);
-        outerImageView = findViewById(R.id.outer_image_view);
-        pantsImageView = findViewById(R.id.pants_image_view);
-        shoesImageView = findViewById(R.id.shoes_image_view);
-        topImageView = findViewById(R.id.top_image_view);
+        //bagImageView = findViewById(R.id.bag_image_view);
+        //headwearImageView = findViewById(R.id.headwear_image_view);
+        //outerImageView = findViewById(R.id.outer_image_view);
+        //pantsImageView = findViewById(R.id.pants_image_view);
+        //shoesImageView = findViewById(R.id.shoes_image_view);
+        //topImageView = findViewById(R.id.top_image_view);
 
         String bagImagePath = getFilePathFromInternalStorage("bag_image.jpg");
         if (bagImagePath != null) {
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
     }
 
     @Override
-    public void onDatabaseInitialized(DataBase database) throws JSONException {
+    public void onDatabaseInitialized(com.example.fashion.DataBase database) throws JSONException {
         mHeadWearDao = database.headWearDao();
         mBagDao = database.bagDao();
         mPantsDao = database.pantsDao();
@@ -290,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            Pants pants = new Pants();
+            com.example.fashion.Pants pants = new com.example.fashion.Pants();
             pants.setSeason("Summer");
             pants.setBrand("Adidas");
             pants.setColor("Red");
@@ -305,9 +307,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
     }
     private static class DeletePantsTask extends AsyncTask<Void, Void, Void> {
         private PantsDao mPantsDao;
-        private Pants mPants;
+        private com.example.fashion.Pants mPants;
 
-        public DeletePantsTask(PantsDao pantsDao, Pants pants) {
+        public DeletePantsTask(PantsDao pantsDao, com.example.fashion.Pants pants) {
             mPantsDao = pantsDao;
             mPants = pants;
         }
@@ -320,9 +322,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
     }
     private static class UpdatePantsTask extends AsyncTask<Void, Void, Void> {
         private PantsDao mPantsDao;
-        private Pants mPants;
+        private com.example.fashion.Pants mPants;
 
-        public UpdatePantsTask(PantsDao pantsDao,Pants pants) {
+        public UpdatePantsTask(PantsDao pantsDao, com.example.fashion.Pants pants) {
             mPantsDao = pantsDao;
             mPants = pants;
         }
@@ -332,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
             return null;
         }
     }
-    private static class SelectPantsTask extends AsyncTask<Integer, Void, Pants> {
+    private static class SelectPantsTask extends AsyncTask<Integer, Void, com.example.fashion.Pants> {
         private ImageView mImageView;
         private Context mContext;
         private PantsDao mPantsDao;
@@ -345,12 +347,12 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         }
 
         @Override
-        protected Pants doInBackground(Integer... ids) {
+        protected com.example.fashion.Pants doInBackground(Integer... ids) {
             return mPantsDao.getPantsById(ids[0]);
         }
 
         @Override
-        protected void onPostExecute(Pants pants) {
+        protected void onPostExecute(com.example.fashion.Pants pants) {
             super.onPostExecute(pants);
             if (pants != null) {
                 String pantsBrand = pants.getBrand();
@@ -380,9 +382,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
     }
     private static class DeleteTopTask extends AsyncTask<Void, Void, Void> {
         private TopDao mTopDao;
-        private Top mTop;
+        private com.example.fashion.Top mTop;
 
-        public DeleteTopTask(TopDao topDao, Top top) {
+        public DeleteTopTask(TopDao topDao, com.example.fashion.Top top) {
             mTopDao = topDao;
             mTop = top;
         }
@@ -402,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Top top = new Top();
+            com.example.fashion.Top top = new com.example.fashion.Top();
             top.setSeason("Summer");
             top.setBrand("Adidas");
             top.setColor("Red");
@@ -417,9 +419,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
     }
     private static class UpdateTopTask extends AsyncTask<Void, Void, Void> {
         private TopDao mTopDao;
-        private Top mTop;
+        private com.example.fashion.Top mTop;
 
-        public UpdateTopTask(TopDao topDao, Top top) {
+        public UpdateTopTask(TopDao topDao, com.example.fashion.Top top) {
             mTopDao = topDao;
             mTop = top;
         }
@@ -430,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
             return null;
         }
     }
-    private static class SelectTopTask extends AsyncTask<Integer, Void, Top> {
+    private static class SelectTopTask extends AsyncTask<Integer, Void, com.example.fashion.Top> {
         private TopDao mTopDao;
         private ImageView mImageView;
         private Context mContext;
@@ -442,12 +444,12 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         }
 
         @Override
-        protected Top doInBackground(Integer... ids) {
+        protected com.example.fashion.Top doInBackground(Integer... ids) {
             return mTopDao.getTopById(ids[0]);
         }
 
         @Override
-        protected void onPostExecute(Top top) {
+        protected void onPostExecute(com.example.fashion.Top top) {
             super.onPostExecute(top);
             if (top != null) {
                 String topBrand = top.getBrand();
@@ -472,7 +474,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
             }
         }
     }
-    private static class InsertOuterTask extends AsyncTask<Outer, Void, Void> {
+    private static class InsertOuterTask extends AsyncTask<com.example.fashion.Outer, Void, Void> {
         private OuterDao mOuterDao;
 
         public InsertOuterTask(OuterDao outerDao) {
@@ -480,8 +482,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         }
 
         @Override
-        protected Void doInBackground(Outer... outers) {
-            Outer outer = new Outer();
+        protected Void doInBackground(com.example.fashion.Outer... outers) {
+            com.example.fashion.Outer outer = new com.example.fashion.Outer();
             outer.setSeason("Summer");
             outer.setBrand("Adidas");
             outer.setColor("Red");
@@ -494,37 +496,37 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
             return null;
         }
     }
-    private static class DeleteOuterTask extends AsyncTask<Outer, Void, Void> {
+    private static class DeleteOuterTask extends AsyncTask<com.example.fashion.Outer, Void, Void> {
         private OuterDao mOuterDao;
-        private Outer mOuter;
+        private com.example.fashion.Outer mOuter;
 
-        public DeleteOuterTask(OuterDao outerDao, Outer outer) {
+        public DeleteOuterTask(OuterDao outerDao, com.example.fashion.Outer outer) {
             mOuterDao = outerDao;
             mOuter = outer;
         }
 
         @Override
-        protected Void doInBackground(Outer... outers) {
+        protected Void doInBackground(com.example.fashion.Outer... outers) {
             mOuterDao.setDeleteOuter(mOuter);
             return null;
         }
     }
-    private static class UpdateOuterTask extends AsyncTask<Outer, Void, Void> {
+    private static class UpdateOuterTask extends AsyncTask<com.example.fashion.Outer, Void, Void> {
         private OuterDao mOuterDao;
         private Outer mOuter;
 
-        public UpdateOuterTask(OuterDao outerDao, Outer outer) {
+        public UpdateOuterTask(OuterDao outerDao, com.example.fashion.Outer outer) {
             mOuterDao = outerDao;
             mOuter = outer;
         }
 
         @Override
-        protected Void doInBackground(Outer... outer) {
+        protected Void doInBackground(com.example.fashion.Outer... outer) {
             mOuterDao.setUpdateOuter(mOuter);
             return null;
         }
     }
-    private static class SelectOuterTask extends AsyncTask<Integer, Void, Outer> {
+    private static class SelectOuterTask extends AsyncTask<Integer, Void, com.example.fashion.Outer> {
         private OuterDao mOuterDao;
         private ImageView mImageView;
         private Context mContext;
@@ -536,12 +538,12 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         }
 
         @Override
-        protected Outer doInBackground(Integer... ids) {
+        protected com.example.fashion.Outer doInBackground(Integer... ids) {
             return mOuterDao.getOuterById(ids[0]);
         }
 
         @Override
-        protected void onPostExecute(Outer outer) {
+        protected void onPostExecute(com.example.fashion.Outer outer) {
             super.onPostExecute(outer);
             if (outer != null) {
                 String outerBrand = outer.getBrand();
@@ -566,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
             }
         }
     }
-    private static class InsertShoesTask extends AsyncTask<Shoes, Void, Void> {
+    private static class InsertShoesTask extends AsyncTask<com.example.fashion.Shoes, Void, Void> {
         private ShoesDao mShoesDao;
 
         public InsertShoesTask(ShoesDao shoesDao) {
@@ -574,8 +576,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         }
 
         @Override
-        protected Void doInBackground(Shoes... shoeses) {
-            Shoes shoes = new Shoes();
+        protected Void doInBackground(com.example.fashion.Shoes... shoeses) {
+            com.example.fashion.Shoes shoes = new com.example.fashion.Shoes();
             shoes.setSeason("fuck");
             shoes.setBrand("SSibal");
             shoes.setColor("asshole");
@@ -588,37 +590,37 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
             return null;
         }
     }
-    private static class DeleteShoesTask extends AsyncTask<Shoes, Void, Void> {
+    private static class DeleteShoesTask extends AsyncTask<com.example.fashion.Shoes, Void, Void> {
         private ShoesDao mShoesDao;
-        private Shoes mShoes;
+        private com.example.fashion.Shoes mShoes;
 
-        public DeleteShoesTask(ShoesDao shoesDao, Shoes shoes) {
+        public DeleteShoesTask(ShoesDao shoesDao, com.example.fashion.Shoes shoes) {
             mShoesDao =shoesDao;
             mShoes = shoes;
         }
 
         @Override
-        protected Void doInBackground(Shoes... shoes) {
+        protected Void doInBackground(com.example.fashion.Shoes... shoes) {
             mShoesDao.setDeleteShoes(mShoes);
             return null;
         }
     }
-    private static class UpdateShoesTask extends AsyncTask<Shoes, Void, Void> {
+    private static class UpdateShoesTask extends AsyncTask<com.example.fashion.Shoes, Void, Void> {
         private ShoesDao mShoesDao;
-        private Shoes mShoes;
+        private com.example.fashion.Shoes mShoes;
 
-        public UpdateShoesTask(ShoesDao shoesDao, Shoes shoes) {
+        public UpdateShoesTask(ShoesDao shoesDao, com.example.fashion.Shoes shoes) {
             mShoesDao =shoesDao;
             mShoes = shoes;
         }
 
         @Override
-        protected Void doInBackground(Shoes... shoes) {
+        protected Void doInBackground(com.example.fashion.Shoes... shoes) {
             mShoesDao.setUpdateShoes(mShoes);
             return null;
         }
     }
-    private static class SelectShoesTask extends AsyncTask<Integer, Void, Shoes> {
+    private static class SelectShoesTask extends AsyncTask<Integer, Void, com.example.fashion.Shoes> {
         private ShoesDao mShoesDao;
         private ImageView mImageView;
         private Context mContext;
@@ -630,12 +632,12 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         }
 
         @Override
-        protected Shoes doInBackground(Integer... ids) {
+        protected com.example.fashion.Shoes doInBackground(Integer... ids) {
             return mShoesDao.getShoesById(ids[0]);
         }
 
         @Override
-        protected void onPostExecute(Shoes shoes) {
+        protected void onPostExecute(com.example.fashion.Shoes shoes) {
             super.onPostExecute(shoes);
             if (shoes != null) {
                 String shoesBrand = shoes.getBrand();
@@ -660,7 +662,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
             }
         }
     }
-    private static class InsertBagTask extends AsyncTask<Bag, Void, Void> {
+    private static class InsertBagTask extends AsyncTask<com.example.fashion.Bag, Void, Void> {
         private BagDao mBagDao;
 
         public InsertBagTask(BagDao bagDao) {
@@ -668,8 +670,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         }
 
         @Override
-        protected Void doInBackground(Bag... bags) {
-            Bag bag = new Bag();
+        protected Void doInBackground(com.example.fashion.Bag... bags) {
+            com.example.fashion.Bag bag = new com.example.fashion.Bag();
             bag.setSeason("Summer");
             bag.setBrand("Adidas");
             bag.setColor("Red");
@@ -682,22 +684,22 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
             return null;
         }
     }
-    private static class DeleteBagTask extends AsyncTask<Bag, Void, Void> {
+    private static class DeleteBagTask extends AsyncTask<com.example.fashion.Bag, Void, Void> {
         private BagDao mBagDao;
-        private Bag mBag;
+        private com.example.fashion.Bag mBag;
 
-        public DeleteBagTask(BagDao bagDao, Bag bag) {
+        public DeleteBagTask(BagDao bagDao, com.example.fashion.Bag bag) {
             mBagDao = bagDao;
             mBag = bag;
         }
 
         @Override
-        protected Void doInBackground(Bag... bags) {
+        protected Void doInBackground(com.example.fashion.Bag... bags) {
             mBagDao.setDeleteBag(mBag);
             return null;
         }
     }
-    private static class SelectBagTask extends AsyncTask<Integer, Void, Bag> {
+    private static class SelectBagTask extends AsyncTask<Integer, Void, com.example.fashion.Bag> {
         private BagDao mBagDao;
         private ImageView mImageView;
         private Context mContext;
@@ -710,13 +712,13 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         }
 
         @Override
-        protected Bag doInBackground(Integer... ids) {
+        protected com.example.fashion.Bag doInBackground(Integer... ids) {
 
             return mBagDao.getBagById(ids[0]);
         }
 
         @Override
-        protected void onPostExecute(Bag bag) {
+        protected void onPostExecute(com.example.fashion.Bag bag) {
             super.onPostExecute(bag);
             if (bag != null) {
                 String bagBrand = bag.getBrand();
@@ -741,17 +743,17 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
             }
         }
     }
-    private static class UpdateBagTask extends AsyncTask<Bag, Void, Void> {
+    private static class UpdateBagTask extends AsyncTask<com.example.fashion.Bag, Void, Void> {
         private BagDao mBagDao;
-        private Bag mBag;
+        private com.example.fashion.Bag mBag;
 
-        public UpdateBagTask(BagDao bagDao, Bag bag) {
+        public UpdateBagTask(BagDao bagDao, com.example.fashion.Bag bag) {
             mBagDao = bagDao;
             mBag = bag;
         }
 
         @Override
-        protected Void doInBackground(Bag... bags) {
+        protected Void doInBackground(com.example.fashion.Bag... bags) {
             mBagDao.setUpdateBag(mBag);
             return null;
         }
@@ -767,7 +769,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
 
         @Override
         protected Void doInBackground(Void... voids) {
-            HeadWear headWear = new HeadWear();
+            com.example.fashion.HeadWear headWear = new com.example.fashion.HeadWear();
             headWear.setSeason("Summer");
             headWear.setBrand("Adidas");
             headWear.setColor("Red");
@@ -782,9 +784,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
     }
     private static class DeleteHeadWearTask extends AsyncTask<Void, Void, Void> {
         private HeadWearDao mHeadWearDao;
-        private HeadWear mHeadWear;
+        private com.example.fashion.HeadWear mHeadWear;
 
-        public DeleteHeadWearTask(HeadWearDao headWearDao, HeadWear headWear) {
+        public DeleteHeadWearTask(HeadWearDao headWearDao, com.example.fashion.HeadWear headWear) {
             mHeadWearDao = headWearDao;
             mHeadWear = headWear;
         }
@@ -797,9 +799,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
     }
     private static class UpdateHeadWearTask extends AsyncTask<Void, Void, Void> {
         private HeadWearDao mHeadWearDao;
-        private HeadWear mHeadWear;
+        private com.example.fashion.HeadWear mHeadWear;
 
-        public UpdateHeadWearTask(HeadWearDao headWearDao, HeadWear headWear) {
+        public UpdateHeadWearTask(HeadWearDao headWearDao, com.example.fashion.HeadWear headWear) {
             mHeadWearDao = headWearDao;
             mHeadWear = headWear;
         }
@@ -810,7 +812,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
             return null;
         }
     }
-    private static class SelectHeadWearTask extends AsyncTask<Integer, Void, HeadWear> {
+    private static class SelectHeadWearTask extends AsyncTask<Integer, Void, com.example.fashion.HeadWear> {
         private HeadWearDao mHeadWearDao;
         private ImageView mImageView;
         private Context mContext;
@@ -820,12 +822,12 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         }
 
         @Override
-        protected HeadWear doInBackground(Integer... ids) {
+        protected com.example.fashion.HeadWear doInBackground(Integer... ids) {
             return mHeadWearDao.getHeadWearById(ids[0]);
         }
 
         @Override
-        protected void onPostExecute(HeadWear headWear) {
+        protected void onPostExecute(com.example.fashion.HeadWear headWear) {
             super.onPostExecute(headWear);
             if (headWear != null) {
                 String headWearBrand = headWear.getBrand();

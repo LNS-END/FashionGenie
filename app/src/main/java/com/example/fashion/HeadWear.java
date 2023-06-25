@@ -1,4 +1,4 @@
-package com.example.fashingenie;
+package com.example.fashion;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

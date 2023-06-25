@@ -1,4 +1,4 @@
-package com.example.fashingenie;
+package com.example.fashion;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

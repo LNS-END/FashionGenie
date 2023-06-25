@@ -11,18 +11,20 @@ import java.util.List;
 @Dao
 public interface PantsDao {
     @Insert
-    void setInsertPants(Pants pants);
+    void setInsertPants(com.example.fashion.Pants pants);
 
     @Update
-    void setUpdatePants(Pants pants);
+    void setUpdatePants(com.example.fashion.Pants mPants);
 
     @Delete
-    void setDeletePants(Pants pants );
+    void setDeletePants(com.example.fashion.Pants pants );
 
     //조회 쿼리
     @Query("select * from Pants ")
     List<Pants> getPantsAll();
 
     @Query("SELECT * FROM Pants WHERE ID = :id")
-    Pants getPantsById(int id);
+    com.example.fashion.Pants getPantsById(int id);
+
+
 }

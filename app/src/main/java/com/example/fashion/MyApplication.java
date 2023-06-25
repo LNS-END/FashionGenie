@@ -1,4 +1,4 @@
-package com.example.fashingenie;
+package com.example.fashion;
 
 import android.app.Application;
 import retrofit2.Call;
@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import androidx.annotation.NonNull;
+
+import com.example.fashion.MyAPI;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -46,21 +48,21 @@ public class MyApplication extends Application {
             MyAPI api = retrofit.create(MyAPI.class);
 
             // Get a reference to your database
-            DataBase database = DataBase.getInstance(getApplicationContext());
+            com.example.fashion.DataBase database = com.example.fashion.DataBase.getInstance(getApplicationContext());
 
-            List<Bag> bag = database.bagDao().getBagAll();
-            List<HeadWear> headWear = database.headWearDao().getHeadWearAll();
-            List<Outer> outers = database.outerDao().getOuterAll();
+            List<com.example.fashion.Bag> bag = database.bagDao().getBagAll();
+            List<com.example.fashion.HeadWear> headWear = database.headWearDao().getHeadWearAll();
+            List<com.example.fashion.Outer> outers = database.outerDao().getOuterAll();
             List<Pants> pants = database.pantsDao().getPantsAll();
-            List<Shoes> shoes = database.shoesDao().getShoesAll();
-            List<Top> tops = database.topDao().getTopAll();
+            List<com.example.fashion.Shoes> shoes = database.shoesDao().getShoesAll();
+            List<com.example.fashion.Top> tops = database.topDao().getTopAll();
 
             sendAllDataToServer(api, bag, headWear, outers, pants, shoes, tops);
         });
     }
 
-    private void sendAllDataToServer(MyAPI api, List<Bag> bags, List<HeadWear> headWears, List<Outer> outers
-    ,List<Pants> pants,List<Shoes> shoes,List<Top> tops) {
+    private void sendAllDataToServer(MyAPI api, List<com.example.fashion.Bag> bags, List<com.example.fashion.HeadWear> headWears, List<com.example.fashion.Outer> outers
+    , List<com.example.fashion.Pants> pants, List<com.example.fashion.Shoes> shoes, List<com.example.fashion.Top> tops) {
         // For bags
         api.sendBagData(bags).enqueue(new Callback<Void>() {
             @Override
