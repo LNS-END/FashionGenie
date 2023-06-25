@@ -88,6 +88,17 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
                 startActivity(intent); // 엑티비티 이동
             }
         });
+        btn_Style_ton = findViewById(R.id.Calendar);
+        btn_Style_ton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,chatdirect.class);
+                startActivity(intent); // 엑티비티 이동
+            }
+        });
+
+
+
 
         String bagImagePath = getFilePathFromInternalStorage("bag_image.jpg");
         if (bagImagePath != null) {
