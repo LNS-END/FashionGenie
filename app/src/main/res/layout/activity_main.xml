@@ -44,9 +44,9 @@
         <Button
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:text="일정"
+            android:text="일정 및 날씨"
             android:textSize="70dp"
-            android:id="@+id/Calendar"/>
+            android:id="@+id/Weather_test"/>
 
     </LinearLayout>
 

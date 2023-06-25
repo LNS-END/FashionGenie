@@ -1,5 +1,6 @@
 package com.example.fashion;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,14 @@ import java.io.File;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.content.Context;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+
+import android.os.AsyncTask;
 
 import com.example.fashion.BagDao;
 import com.example.fashion.CoordiDao;
@@ -28,6 +37,13 @@ import com.example.fashion.TopDao;
 import com.example.fashion.WeatherDao;
 
 import org.json.JSONException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity implements DatabaseInitializationTask.DatabaseInitializationListener {
@@ -51,11 +67,14 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
     private Button btn_Style_ton;
     private Button btn_Style_closet;
 
+    private Button btn_Style_we;
+
+    private static final String API_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst";
+    private static final String SERVICE_KEY = "%2BS0YUmIviJtQT3mn%2F7AIROkt4IqYMhL7cLGNtL3ukN4XtBgUJRn4XLF27Vq315kgew358sxOzJBcUTKL3qAKFg%3D%3D";
 
 
 
-
-
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,10 +103,15 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         btn_Style_ton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                retrieveWeatherInfo();
                 Intent intent = new Intent(MainActivity.this,style_of_today.class);
                 startActivity(intent); // 엑티비티 이동
             }
         });
+
+
+
 
         String bagImagePath = getFilePathFromInternalStorage("bag_image.jpg");
         if (bagImagePath != null) {
@@ -118,6 +142,132 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         if (topImagePath != null) {
             displayImage(topImagePath, topImageView);
         }
+    }
+
+    private void retrieveWeatherInfo() {
+        new RetrieveWeatherTask().execute();
+    }
+
+    // 날씨 정보를 가져오는 비동기 태스크 클래스입니다.
+    private class RetrieveWeatherTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                String nx = "58";  // 광주광역시의 nx 격자 좌표
+                String ny = "74"; // 광주광역시의 ny 격자 좌표
+                String requestUrl = API_URL + "?serviceKey=" + SERVICE_KEY + "&numOfRows=10&pageNo=1&base_date=20230625&base_time=1400&nx=" + nx + "&ny=" + ny;
+                URL url = new URL(requestUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder builder = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+
+                reader.close();
+                connection.disconnect();
+
+                return builder.toString();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+
+
+        private HashMap<String, String> parseWeatherXml(String xmlData) {
+            HashMap<String, String> weatherData = new HashMap<>();
+            try {
+                XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+                XmlPullParser parser = factory.newPullParser();
+                parser.setInput(new StringReader(xmlData));
+                int eventType = parser.getEventType();
+                String category = "", obsrValue = "";
+
+                while (eventType != XmlPullParser.END_DOCUMENT) {
+                    switch (eventType) {
+                        case XmlPullParser.START_TAG:
+                            if (parser.getName().equals("category")) {
+                                eventType = parser.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    category = parser.getText();
+                                }
+                            } else if (parser.getName().equals("obsrValue")) {
+                                eventType = parser.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    obsrValue = parser.getText();
+                                }
+                            }
+                            break;
+                        case XmlPullParser.END_TAG:
+                            if (parser.getName().equals("item")) {
+                                weatherData.put(category, obsrValue);
+                                category = "";
+                                obsrValue = "";
+                            }
+                            break;
+                    }
+                    eventType = parser.next();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return weatherData;
+        }
+
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Log.d("WeatherInfo", result);
+            if (result != null) {
+                // Parse the XML
+                HashMap<String, String> weatherData = parseWeatherXml(result);
+                String temperature = weatherData.get("T1H");
+                String precipitationType = weatherData.get("PTY");
+
+                String weatherType;
+                switch (precipitationType) {
+                    case "1":
+                        weatherType = "Rainy";
+                        break;
+                    case "2":
+                        weatherType = "Snowy";
+                        break;
+                    default:
+                        weatherType = "Sunny";
+                        break;
+                }
+
+                Log.d("WeatherInfo", "Temperature: " + temperature + ", Weather: " + weatherType);
+
+                WeatherData weatherDataObject = new WeatherData(temperature, weatherType);
+
+                // Send data to server
+                Service service = RetrofitClientInstance.getRetrofitInstance().create(Service.class);
+                Call<ResponseBody> call = service.postWeatherData(weatherDataObject);
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        // Handle response here
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        // Handle failure here
+                    }
+                });
+            }
+
+        }
+
     }
 
     private String getFilePathFromInternalStorage(String fileName) {
@@ -978,6 +1128,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
             return null;
         }
     }
+
+
 
 
 }

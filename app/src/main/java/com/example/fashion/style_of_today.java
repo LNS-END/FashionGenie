@@ -1,6 +1,7 @@
 package com.example.fashion;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,14 +14,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 public class style_of_today extends AppCompatActivity {
+
+    private static final String API_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst";
+    private static final String SERVICE_KEY = "%2BS0YUmIviJtQT3mn%2F7AIROkt4IqYMhL7cLGNtL3ukN4XtBgUJRn4XLF27Vq315kgew358sxOzJBcUTKL3qAKFg%3D%3D"; // 여기에 서비스 키를 입력해야 합니다.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,8 +94,23 @@ public class style_of_today extends AppCompatActivity {
                 });
             }
         });
+
+
+
+        ImageButton imageButtonWe = (ImageButton)findViewById(R.id.Good);
+        imageButtonWe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
+
+
+
 }
+
 
 
     //ImageView topClothes = findViewById(R.id.top_clothes);

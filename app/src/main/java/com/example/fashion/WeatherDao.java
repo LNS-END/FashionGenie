@@ -25,4 +25,5 @@ public interface WeatherDao {
     @Query("SELECT * FROM Weather WHERE ID = :id")
     Weather getWeatherById(int id);
 
+
 }
