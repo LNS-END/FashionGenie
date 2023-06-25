@@ -1,15 +1,5 @@
 package com.example.fashion;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.RadioButton;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.Camera;
@@ -23,8 +13,22 @@ import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RadioButton;
+
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -116,7 +120,9 @@ public class CameraActivity extends AppCompatActivity {
                             .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                             .build();
 
-                    imageCapture = new ImageCapture.Builder().build();
+                    imageCapture = new ImageCapture.Builder()
+                            .setTargetRotation(previewView.getDisplay().getRotation()) // 회전 설정 추가
+                            .build();
 
                     preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
@@ -128,6 +134,7 @@ public class CameraActivity extends AppCompatActivity {
             }
         }, ContextCompat.getMainExecutor(this));
     }
+
 
     private void takePhoto() {
         if (imageCapture == null) {
@@ -143,8 +150,16 @@ public class CameraActivity extends AppCompatActivity {
                 byte[] data = new byte[buffer.remaining()];
                 buffer.get(data);
 
-                // 버퍼에 저장된 이미지 사용 가능
-                // 여기서 원하는 작업을 수행할 수 있습니다.
+                // 이미지 회전 처리
+                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                Matrix matrix = new Matrix();
+                matrix.postRotate(90); // 반시계 방향으로 90도 회전
+                Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+                // 회전된 이미지를 다시 byte 배열로 변환
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                byte[] rotatedData = outputStream.toByteArray();
 
                 // 이미지를 저장할 경로와 파일명을 생성합니다.
                 String imagePath = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/";
@@ -178,12 +193,12 @@ public class CameraActivity extends AppCompatActivity {
                 FileOutputStream output = null;
                 try {
                     output = new FileOutputStream(imagePath);
-                    output.write(data);
+                    output.write(rotatedData);
                     output.close();
-                    Log.d(TAG, "Image saved successfully: " + imagePath);
+                    Log.d(TAG, "이미지 저장 성공: " + imagePath);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.e(TAG, "Failed to save image: " + e.getMessage());
+                    Log.e(TAG, "이미지 저장 실패: " + e.getMessage());
                 }
 
                 // 저장된 이미지의 경로 및 카테고리를 사용하여 원하는 작업을 수행합니다.
@@ -195,10 +210,11 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onError(@NonNull ImageCaptureException exception) {
                 // 이미지 캡처 중 오류 발생
-                Log.e(TAG, "Image capture failed: " + exception.getMessage());
+                Log.e(TAG, "이미지 캡처 실패: " + exception.getMessage());
             }
         });
     }
+
 
 
     private File createPhotoFile() {
