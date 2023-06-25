@@ -1,4 +1,4 @@
-package com.example.fashingenie;
+package com.example.fashion;
 
 import androidx.room.Database;
 import androidx.room.Insert;
@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase;
 import android.content.Context;
 import androidx.room.Room;
 
-@Database(entities = {HeadWear.class,Bag.class,Outer.class, Pants.class, Shoes.class,Top.class,Coordi.class,Weather.class ,LikedCoordi.class},version = 7)
+@Database(entities = {com.example.fashion.HeadWear.class,Bag.class, com.example.fashion.Outer.class, com.example.fashion.Pants.class, com.example.fashion.Shoes.class, com.example.fashion.Top.class,Coordi.class,Weather.class ,LikedCoordi.class},version = 7)
 public abstract class DataBase extends RoomDatabase {
 
     public abstract HeadWearDao headWearDao();

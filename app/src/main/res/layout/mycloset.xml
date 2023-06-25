@@ -32,7 +32,6 @@
         android:id="@+id/imageButton"
         android:layout_width="690dp"
         android:layout_height="690dp"
-        android:layout_centerInParent="true"
         android:contentDescription="옷장 페이지로 넘어갑니다."
         android:scaleType="fitCenter"
         android:src="@drawable/images" />

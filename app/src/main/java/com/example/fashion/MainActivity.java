@@ -1,8 +1,11 @@
 package com.example.fashion;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
@@ -45,6 +48,12 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
     private ImageView shoesImageView;
     private ImageView topImageView;
 
+    private Button btn_Style_ton;
+    private Button btn_Style_closet;
+
+
+
+
 
 
     @Override
@@ -55,12 +64,30 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
         DatabaseInitializationTask initializationTask = new DatabaseInitializationTask(this, this);
         initializationTask.execute();
 
-        bagImageView = findViewById(R.id.bag_image_view);
-        headwearImageView = findViewById(R.id.headwear_image_view);
-        outerImageView = findViewById(R.id.outer_image_view);
-        pantsImageView = findViewById(R.id.pants_image_view);
-        shoesImageView = findViewById(R.id.shoes_image_view);
-        topImageView = findViewById(R.id.top_image_view);
+        //bagImageView = findViewById(R.id.bag_image_view);
+        //headwearImageView = findViewById(R.id.headwear_image_view);
+        //outerImageView = findViewById(R.id.outer_image_view);
+        //pantsImageView = findViewById(R.id.pants_image_view);
+        //shoesImageView = findViewById(R.id.shoes_image_view);
+        //topImageView = findViewById(R.id.top_image_view);
+
+        btn_Style_closet = findViewById(R.id.MyCloset);
+        btn_Style_closet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,MyclosetActivity.class);
+                startActivity(intent); // 엑티비티 이동
+            }
+        });
+
+        btn_Style_ton = findViewById(R.id.todayOf_style);
+        btn_Style_ton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,style_of_today.class);
+                startActivity(intent); // 엑티비티 이동
+            }
+        });
 
         String bagImagePath = getFilePathFromInternalStorage("bag_image.jpg");
         if (bagImagePath != null) {
@@ -109,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseInitializ
     }
 
     @Override
-    public void onDatabaseInitialized(com.example.fashingenie.DataBase database) throws JSONException {
+    public void onDatabaseInitialized(com.example.fashion.DataBase database) throws JSONException {
         mHeadWearDao = database.headWearDao();
         mBagDao = database.bagDao();
         mPantsDao = database.pantsDao();

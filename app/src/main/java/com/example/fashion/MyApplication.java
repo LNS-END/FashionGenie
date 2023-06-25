@@ -1,4 +1,4 @@
-package com.example.fashingenie;
+package com.example.fashion;
 
 import android.app.Application;
 import retrofit2.Call;
